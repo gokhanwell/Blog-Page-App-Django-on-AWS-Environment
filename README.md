@@ -1,4 +1,4 @@
-# Project-503 : Blog Page Application (Django) deployed on AWS Application Load Balancer with Auto Scaling, S3, Relational Database Service(RDS), VPC's Components, Lambda, DynamoDB and Cloudfront with Route 53
+# Blog Page Application (Django) deployed on AWS Application Load Balancer with Auto Scaling, S3, Relational Database Service(RDS), VPC's Components, Lambda, DynamoDB and Cloudfront with Route 53
 
 ## Description
 
@@ -6,7 +6,7 @@ The Gökhan YARDIMCI Blog Page Application aims to deploy blog application as a 
 
 ## Problem Statement
 
-![Project_004](capstone.jpg)
+![Project_004](blogpage.jpg)
 
 - Your company has recently ended up a project that aims to serve as Blog web application on isolated VPC environment. You and your colleagues have started to work on the project. Your Developer team has developed the application and you are going to deploy the app in production environment.
 
@@ -96,7 +96,7 @@ In the architecture, you can configure your infrastructure using the followings,
   
     - Instance type can be configured as `db.t2.micro`
 
-    - Database engine can be `MySQL` with version of `8.0.20`.
+    - Database engine can be `MySQL` with version of `8.0.28`.
 
     - RDS endpoint should be addressed within settings file of blog application that is explained developer notes.
 
@@ -172,11 +172,11 @@ In the architecture, you can configure your infrastructure using the followings,
 ```text
 Blog-Page-App-Django-on-AWS-Environment (folder)
 |
-|----Readme.md               # Given to the students (Definition of the project)
-|----src (folder)            # Given to the students (Django Application's )
-|----requirements.txt        # Given to the students (txt file)
-|----lambda_function.py      # Given to the students (python file)
-|----developer_notes.txt     # Given to the students (txt file)
+|----Readme.md               # Given to the (Definition of the project)
+|----src (folder)            # Given to the (Django Application's )
+|----requirements.txt        # Given to the (txt file)
+|----lambda_function.py      # Given to the (python file)
+|----developer_notes.txt     # Given to the (txt file)
 ```
 
 ## Expected Outcome

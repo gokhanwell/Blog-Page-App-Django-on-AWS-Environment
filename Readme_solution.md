@@ -180,10 +180,13 @@ apt-get update -y
 apt-get install git -y
 apt-get install python3 -y
 cd /home/ubuntu/
-TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-git clone https://$TOKEN@github.com/gokhanwell/Blog-Page-App-Django-on-AWS-Environment
+# TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXX"
+#git clone https://$TOKEN@github.com/gokhanwell/Blog-Page-App-Django-on-AWS-Environment
+git clone https://github.com/gokhanwell/Blog-Page-App-Django-on-AWS-Environment
 cd /home/ubuntu/Blog-Page-App-Django-on-AWS-Environment
 apt install python3-pip -y
+add-apt-repository ppa:deadsnakes/ppa -y
+apt-get update -y
 apt-get install python3.7-dev default-libmysqlclient-dev -y
 pip3 install -r requirements.txt
 cd /home/ubuntu/Blog-Page-App-Django-on-AWS-Environment/src
@@ -262,10 +265,13 @@ apt-get update -y
 apt-get install git -y
 apt-get install python3 -y
 cd /home/ubuntu/
-TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXX"
-git clone https://$TOKEN@github.com/gokhanwell/Blog-Page-App-Django-on-AWS-Environment
+# TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXX"
+#git clone https://$TOKEN@github.com/gokhanwell/Blog-Page-App-Django-on-AWS-Environment
+git clone https://github.com/gokhanwell/Blog-Page-App-Django-on-AWS-Environment
 cd /home/ubuntu/Blog-Page-App-Django-on-AWS-Environment
 apt install python3-pip -y
+add-apt-repository ppa:deadsnakes/ppa -y
+apt-get update -y
 apt-get install python3.7-dev default-libmysqlclient-dev -y
 pip3 install -r requirements.txt
 cd /home/ubuntu/Blog-Page-App-Django-on-AWS-Environment/src
@@ -292,8 +298,8 @@ Network mapping:
 VPC                     : blog-page-VPC
 Mappings                :
     - Availability zones:
-        1. aws_capstone-public-subnet-1A
-        2. aws_capstone-public-subnet-1B
+        1. blog-page-public-subnet-1A
+        2. blog-page-public-subnet-1B
 Security Groups         :
 Security Groups         : blog-page-ALB_Sec_group
 
@@ -358,7 +364,7 @@ Launch Template                 : blog-page-launch_template
 
 ```text
 Network                         :
-    - VPC                       : aws-capstone-VPC
+    - VPC                       : blog-page-VPC
     - Subnets                   : Private 1A and Private 1B
 Instance type requirements
     - Keep it as is
@@ -461,7 +467,7 @@ Come to the Route53 console and select Health checks on the left hand menu. Clic
 Configure health check
 
 ```text
-Name                : aws capstone health check
+Name                : aws blogpage health check
 What to monitor     : Endpoint
 Specify endpoint by : Domain Name
 Protocol            : HTTP
@@ -472,7 +478,7 @@ Other stuff         : Keep them as are
 ```
 - Click Hosted zones on the left hand menu
 
-- click your Hosted zone        : <YOUR DNS NAME>
+- click your Hosted zone        : gokhanyardimci.com
 
 - Create Failover scenario
 
@@ -481,7 +487,7 @@ Other stuff         : Keep them as are
 - Select Failover ---> Click Next
 ```text
 Configure records
-Record name             : www.<YOUR DNS NAME>
+Record name             : www.gokhanyardimci
 Record Type             : A - Routes traffic to an IPv4 address and some AWS resources
 TTL                     : 300
 
@@ -492,7 +498,7 @@ Failover record to add to your DNS ---> Define failover record
 Value/Route traffic to  : Alias to cloudfront distribution
                           - Select created cloudfront DNS
 Failover record type    : Primary
-Health check            : aws capstone health check
+Health check            : aws blogpage health check
 Record ID               : Cloudfront as Primary Record
 ----------------------------------------------------------------
 
@@ -515,7 +521,7 @@ Go to the Dynamo Db table and click create table button
 
 - Create DynamoDB table
 ```text
-Name            : awscapstoneDynamo
+Name            : awsblogpageDynamo
 Primary key     : id
 Other Stuff     : Keep them as are
 click create
@@ -539,13 +545,13 @@ then, go to the Lambda Console and click create function
 - Basic Information
 ```text
 
-Function Name           : awscapsitonelambdafunction
+Function Name           : awsblogpagelambdafunction
 Runtime                 : Python 3.8
 Create IAM role         : S3 full access policy
 
 Advance Setting:
 Network                 : 
-    - VPC               : aws-capstone-VPC
+    - VPC               : aws-blogpage-VPC
     - Subnets           : Select all subnets
     - Security Group    : Select default security Group
 ```
@@ -554,29 +560,29 @@ Network                 :
 
 ## Step 17-18: Create S3 Event and set it as trigger for Lambda Function
 
-Go to the S3 console and select the S3 bucket named `awscapstonec3<name>blog`.
+Go to the S3 console and select the S3 bucket named `blogpagegokhanyardimci`.
 
 - Go to the properties menu ---> Go to the Event notifications part
 
 - Click create event notification for creating object
 ```text
-Event Name              : aws capstone S3 event
+Event Name              : aws blogpage S3 event
 Prefix                  : media/
 Select                  :
     - All object create events
 Destination             : Lambda Function
 Specify Lambda function : Choose from your Lambda functions 
-Lambda funstion         : awscapstonelambdafunction
+Lambda funstion         : awsblogpagelambdafunction
 click save
 ```text
 
 ```
-- After create an event go to the `awscapstonelambdafunction` lambda Function and click add trigger on the top left hand side.
+- After create an event go to the `awsblogpagelambdafunction` lambda Function and click add trigger on the top left hand side.
 
 - For defining trigger for creating objects
 ```text
 Trigger configuration   : S3
-Bucket                  : awscapstonec3<name>blog
+Bucket                  : blogpagegokhanyardimci
 Event type              : All object create events
 Check the warning message and click add ---> sometimes it says overlapping situation. When it occurs, try refresh page and create a new trigger or remove the s3 event and recreate again. then again create a trigger for lambda function
 ```
@@ -585,7 +591,7 @@ Check the warning message and click add ---> sometimes it says overlapping situa
 ```bash
 
 Trigger configuration   : S3
-Bucket                  : awscapstonec3<name>blog
+Bucket                  : blogpagegokhanyardimci
 Event type              : All object delete events
 Check the warning message and click add ---> sometimes it says overlapping situation. When it occurs, try refresh page and create a new trigger or remove the s3 event and recreate again. then again create a trigger for lambda function
 ```
@@ -609,7 +615,7 @@ def lambda_handler(event, context):
         filename2 = filename1[-1]
         
         dynamo_db = boto3.resource('dynamodb')
-        dynamoTable = dynamo_db.Table('awscapstoneDynamo')
+        dynamoTable = dynamo_db.Table('awsblogpageDynamo')
         
         dynamoTable.put_item(Item = {
             'id': filename2,
@@ -624,4 +630,4 @@ def lambda_handler(event, context):
 
 - WE ALL SET
 
-- Congratulations!! You have finished your AWS Capstone Project
+- Congratulations!! You have finished your AWS Gökhan YARDIMCI Blogpage Project
